@@ -38,12 +38,14 @@ float GaussianDet(vector<vector<float>>& mat, int n){
             }
             if(!found_row) return 0;
         }
+
         for(int j=i+1; j<n; j++){
             float factor = mat[j][i]/mat[i][i];
             vector<float> mod_row = ScalarMult(factor, mat[i]);
             Sub(mat[j], mod_row);
         }
     }
+    
     int sign = (swaps%2 == 0) ? 1 : -1;
     float det = mat[0][0];
     for(int i=1; i<n; i++){
