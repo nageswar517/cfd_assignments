@@ -45,7 +45,7 @@ float GaussianDet(vector<vector<float>>& mat, int n){
             Sub(mat[j], mod_row);
         }
     }
-    
+
     int sign = (swaps%2 == 0) ? 1 : -1;
     float det = mat[0][0];
     for(int i=1; i<n; i++){
@@ -114,7 +114,6 @@ void SectionB(){
         }
     }
 
-    //float det = Det(n, mat);
     float det = GaussianDet(mat, n);
     cout << "Determinant of given matrix is " << det << "\n";
 }
@@ -128,6 +127,8 @@ int main(){
     if(section == 1) SectionA();
     else if(section == 2) SectionB();
     else if(section == -1) return 0;
-
+    else {
+        cout << "Invalid option.";
+    }
     return 0;
 }
