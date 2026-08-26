@@ -23,34 +23,6 @@ void Sub(vector<float>& a, const vector<float>& b){
     }
 }
 
-void CreateSubMat(vector<vector<float>>& mat, vector<vector<float>>& sub, int col, int n){
-    for(int i=1; i<n; i++){
-        int subcol = 0;
-        for(int j=0; j<n; j++){
-            if(j == col) continue;
-            sub[i-1][subcol] = mat[i][j];
-            subcol++;
-        }
-    }
-}
-
-float Det(int n, vector<vector<float>>& mat){
-    if(n == 1) return mat[0][0];
-    if(n == 2){
-        return (mat[0][0]*mat[1][1])-(mat[0][1]*mat[1][0]);
-    }
-
-    float det = 0;
-    for(int i=0; i<n; i++){
-        vector<vector<float>> temp(n-1, vector<float>(n-1));
-        CreateSubMat(mat, temp, i, n);
-        int sign = (i%2 == 0) ? 1 : -1;
-        float term = sign * mat[0][i] * Det(n-1, temp);
-        det += term;
-    }
-    return det;
-}
-
 float GaussianDet(vector<vector<float>>& mat, int n){
     int swaps = 0;
     for(int i=0; i<n; i++){
