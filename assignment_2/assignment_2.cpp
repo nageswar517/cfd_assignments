@@ -54,7 +54,20 @@ float GaussianDet(vector<vector<float>>& mat, int n){
     return sign * det;
 }
 
+vector<vector<float>> Transpose(vector<vector<float>>& mat, int n){
+    vector<vector<float>> transpose(n, vector<float>(n));
+    for(int i=0; i<n; i++){
+        for(int j=i; j<n; j++){
+            transpose[i][j] = mat[j][i];
+            transpose[j][i] = mat[i][j];
+        }
+    }
+
+    return transpose;
+}
+
 // section a
+// Matrix is stored in coloumn-major form
 void SectionA(){
     int ra, ca, rb, cb;
     cout << "Enter the order of matrix A: ";
@@ -66,20 +79,18 @@ void SectionA(){
         return;
     }
     vector<vector<float>> a(ca, vector<float>(ra));
-    cout << "Enter elements of matrix A coloumn wise:\n";
-    for (int i=0; i<ca; i++){
-        cout << "Enter elements of column " << i+1 << ":\n";
-        for(int j=0; j<ra; j++){
-            cin >> a[i][j];
+    cout << "Enter elements of matrix A row wise:\n";
+    for (int i=0; i<ra; i++){
+        for(int j=0; j<ca; j++){
+            cin >> a[j][i];
         }
     }
 
     vector<vector<float>> b(cb, vector<float>(rb));
-    cout << "Enter elements of matrix B coloumn wise:\n";
-    for(int i=0; i<cb; i++){
-        cout << "Enter elements of column " << i+1 << ":\n";
-        for(int j=0; j<rb; j++){
-            cin >> b[i][j];
+    cout << "Enter elements of matrix B row wise:\n";
+    for(int i=0; i<rb; i++){
+        for(int j=0; j<cb; j++){
+            cin >> b[j][i];
         }
     }
 
@@ -102,6 +113,7 @@ void SectionA(){
 }
 
 // section b
+// Matrix is stored in row-major form
 void SectionB(){
     int n;
     cout << "Enter order of matrix: ";
@@ -114,14 +126,22 @@ void SectionB(){
         }
     }
 
+    vector<vector<float>> transpose = Transpose(mat, n);
     float det = GaussianDet(mat, n);
     cout << "Determinant of given matrix is " << det << "\n";
+    cout << "Transpose of the given matrix is:\n";
+    for(int i=0; i<n; i++){
+        for(int j=0; j<n; j++){
+            cout << transpose[i][j] << "    ";
+        }
+        cout << "\n";
+    }
 }
 
 int main(){
     int section;
     cout << "Select matrix multiplication or determinant of matrix.\n";
-    cout << "Enter 1 for matrix multiplication or 2 for determinant of matrix or -1 to exit: ";
+    cout << "Enter 1 for matrix multiplication or 2 for determinant and transpose of matrix or -1 to exit: ";
     cin >> section;
 
     if(section == 1) SectionA();
