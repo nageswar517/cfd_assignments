@@ -7,6 +7,7 @@ using namespace std;
 
 void ReadFileToMat(char* file, vector<vector<float>>& mat){
     ifstream in;
+    in.open(file);
     string line;
     
     while(getline(in, line)){
