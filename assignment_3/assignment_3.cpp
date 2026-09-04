@@ -34,8 +34,8 @@ int WriteMatToFile(vector<vector<float>>& mat){
         cout << "Error writing to output file.\n";
         return 1;
     }
-    for(int i=0; i<mat.size(); i++){
-        for(int j=0; j<mat[0].size(); j++){
+    for(int i=0; i<mat[0].size(); i++){
+        for(int j=0; j<mat.size(); j++){
             out << mat[j][i] << " ";
         }
         out << "\n";
@@ -93,7 +93,7 @@ int main(int argc, char** argv){
         }
         c[i] = temp;
     }
-
+    
     WriteMatToFile(c);
         
     return 0;
