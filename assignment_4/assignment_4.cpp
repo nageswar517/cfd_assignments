@@ -10,15 +10,36 @@ const int n = 200;
 const float dx = (float)length/m;
 const float dy = (float)length/n;
 
-void WriteToFile(vector<vector<float>>& mat){
+void WriteGridToFile(){
+    ofstream out;
+    out.open("grid.dat");
+    if(!out.is_open()){
+        cout << "Error writing to file grid.dat\n";
+        exit(1);
+    }
+    for(int i=0; i<m+1; i++){
+        for(int j=0; j<n+1; j++){
+            if(j==0){
+                out << "(" << dx*i << ", " << dy*j << ")";
+                continue;
+            }
+            out << " (" << dx*i << ", " << dy*j << ")";
+        }
+        out << "\n";
+    }
+    out.close();
+    cout << "Grid written successfully.\n";
+}
+
+void WriteToFileT(vector<vector<float>>& mat){
     ofstream out;
     out.open("T.dat");
     if(!out.is_open()){
         cout << "Error writing to file.\n";
         exit(1);
     }
-    for(int i=0; i<m; i++){
-        for(int j=0; j<n; j++){
+    for(int i=0; i<m+1; i++){
+        for(int j=0; j<n+1; j++){
             if(j==0){
                 out << "[" << dx*i << ", " << dy*j << ", " << mat[i][j] << "]";
                 continue;
@@ -28,11 +49,11 @@ void WriteToFile(vector<vector<float>>& mat){
         out << "\n";
     }
     out.close();
-    cout << "Data written to file successfully.\n";
+    cout << "T written to file successfully.\n";
 }
 
 int main(){
-    vector<vector<float>> t(m, vector<float>(n));
+    vector<vector<float>> t(m+1, vector<float>(n+1));
 
     for(int i=0; i<m; i++){
         for(int j=0; j<n; j++){
@@ -41,7 +62,9 @@ int main(){
             else t[i][j] = 0.25;
         }
     }
-    WriteToFile(t);
+
+    WriteGridToFile();
+    WriteToFileT(t);
 
     return 0;
 }
