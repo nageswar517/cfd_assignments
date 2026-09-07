@@ -1,0 +1,8 @@
+clc, clearvars, clear;
+
+grid = readmatrix("assignment_4\grid.dat");
+
+x = grid(:, 1);
+y = grid(:, 2);
+
+plot(x)

@@ -19,13 +19,8 @@ void WriteGridToFile(){
     }
     for(int i=0; i<m+1; i++){
         for(int j=0; j<n+1; j++){
-            if(j==0){
-                out << "(" << dx*i << ", " << dy*j << ")";
-                continue;
-            }
-            out << " (" << dx*i << ", " << dy*j << ")";
+            out << dx*i << "\t" << dy*j << "\n";
         }
-        out << "\n";
     }
     out.close();
     cout << "Grid written successfully.\n";
@@ -40,13 +35,8 @@ void WriteToFileT(vector<vector<float>>& mat){
     }
     for(int i=0; i<m+1; i++){
         for(int j=0; j<n+1; j++){
-            if(j==0){
-                out << "[" << dx*i << ", " << dy*j << ", " << mat[i][j] << "]";
-                continue;
-            }
-            out << " [" << dx*i << ", " << dy*j << ", " << mat[i][j] << "]";
+            out << dx*i << "\t" << dy*j << "\t" <<  mat[i][j] << "\n";
         }
-        out << "\n";
     }
     out.close();
     cout << "T written to file successfully.\n";
@@ -55,8 +45,8 @@ void WriteToFileT(vector<vector<float>>& mat){
 int main(){
     vector<vector<float>> t(m+1, vector<float>(n+1));
 
-    for(int i=0; i<m; i++){
-        for(int j=0; j<n; j++){
+    for(int i=0; i<m+1; i++){
+        for(int j=0; j<n+1; j++){
             if(i<50 && j<50) t[i][j] = 1;
             else if(i>=50 && j>=50) t[i][j] = 0.5;
             else t[i][j] = 0.25;
