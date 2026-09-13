@@ -25,7 +25,11 @@ axis equal;
 exportgraphics(gcf, 'assignment_4\grid.png', 'Resolution', 600);
 
 figure;
+hold on;
 pcolor(X, Y, T);
+plot(X, Y, 'black-');
+plot(X', Y', 'black-');
+hold off;
 shading flat;
 colormap("parula");
 colorbar;
@@ -34,3 +38,5 @@ title('Temperature colour map');
 xlabel('X-Axis');
 ylabel('Y-Axis');
 axis equal;
+
+exportgraphics(gcf, 'assignment_4\temperature_colour_map.png', 'Resolution', 600);
