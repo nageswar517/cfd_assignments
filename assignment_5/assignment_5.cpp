@@ -59,7 +59,7 @@ void Jacobi(vector<vector<double>>& domain, vector<vector<double>>& new_domain){
 
             }
         }
-        e = sqrt(sum_e/(m*n));
+        e = sqrt(sum_e/((m+1)*(n+1)));
         jacobi_it++;
     }
     auto end_time = chrono::high_resolution_clock::now();
@@ -91,7 +91,7 @@ void PGS(vector<vector<double>>& domain, vector<vector<double>>& new_domain){
 
             }
         }
-        e = sqrt(sum_e/(m*n));
+        e = sqrt(sum_e/((m+1)*(n+1)));
         pgs_it++;
     }
     auto end_time = chrono::high_resolution_clock::now();
@@ -106,13 +106,25 @@ int main(){
     vector<vector<double>> domain(n+3, vector<double>(m+1));
     vector<vector<double>> new_domain(n+3, vector<double>(m+1));
 
+    ofstream out;
+
     InitValues(domain);
     InitValues(new_domain);
     Jacobi(domain, new_domain);
+    out.open("y_const_jacobi.dat");
+    for(int i=0; i<m+1; i++){
+        out << i*grid_size << " " << new_domain[51][i] << "\n";
+    }
+    out.close();
 
     InitValues(domain);
     InitValues(new_domain);
     PGS(domain, new_domain);
+    out.open("y_const_pgs.dat");
+    for(int i=0; i<m+1; i++){
+        out << i*grid_size << " " << new_domain[51][i] << "\n";
+    }
+    out.close();
 
     return 0;
 }
