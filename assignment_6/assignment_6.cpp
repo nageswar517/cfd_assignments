@@ -46,7 +46,7 @@ void WriteToFile(const vector<vector<double>>& domain){
     
 }
 
-void PGS(vector<vector<double>>& domain, vector<vector<double>> new_domain){
+void PGS(vector<vector<double>>& domain, vector<vector<double>>& new_domain){
     auto start_time = chrono::high_resolution_clock::now();
     double e = 1000;
     while(e > acc){
@@ -66,7 +66,7 @@ void PGS(vector<vector<double>>& domain, vector<vector<double>> new_domain){
                 sum_e += diff*diff;
             }
         }
-        e = sqrt(sum_e/(m*n));
+        e = sqrt(sum_e/(m*(n-1)));
         pgs_it++;
     }
 
@@ -74,19 +74,19 @@ void PGS(vector<vector<double>>& domain, vector<vector<double>> new_domain){
     ofstream out;
     out.open("pgs_x0.dat");
     for(int j=0; j<n+1; j++){
-        out << j*grid_size << " " << domain[j][0] << "\n";
+        out << j*grid_size << " " << new_domain[j][0] << "\n";
     }
     out.close();
 
     out.open("pgs_x25.dat");
     for(int j=0; j<n+1; j++){
-        out << j*grid_size << " " << domain[j][100] << "\n";
+        out << j*grid_size << " " << new_domain[j][100] << "\n";
     }
     out.close();
 
     out.open("pgs_x50.dat");
     for(int j=0; j<n+1; j++){
-        out << j*grid_size << " " << domain[j][200] << "\n";
+        out << j*grid_size << " " << new_domain[j][200] << "\n";
     }
     out.close();
 }
