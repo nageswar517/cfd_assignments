@@ -55,7 +55,7 @@ void PGS(vector<vector<double>>& domain, vector<vector<double>>& new_domain){
 
         // update bc
         for(int i=1; i<m; i++){
-            new_domain[n+1][i] = domain[n-1][i] + (((2*h*grid_size)/k)*(T_inf - domain[n][i]));
+            domain[n+1][i] = domain[n-1][i] + (((2*h*grid_size)/k)*(T_inf - domain[n][i]));
         }
 
         //iterate
