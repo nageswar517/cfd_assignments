@@ -11,7 +11,7 @@ const double ly = 1;
 const int m = 400;
 const int n = 400;
 const double grid_size = lx/m;
-const double acc = 0.1;
+const double acc = 1e-6;
 
 long long int pgs_it = 0;
 long long int psor_it = 0;
@@ -42,8 +42,6 @@ void WriteToFile(const vector<vector<double>>& domain){
         out << "\n";
     }
     out.close();
-
-    
 }
 
 void PGS(vector<vector<double>>& domain, vector<vector<double>>& new_domain){
@@ -69,6 +67,13 @@ void PGS(vector<vector<double>>& domain, vector<vector<double>>& new_domain){
         e = sqrt(sum_e/(m*(n-1)));
         pgs_it++;
     }
+    auto end_time = chrono::high_resolution_clock::now();
+    chrono::duration<double> elapsed = end_time - start_time;
+    double time = elapsed.count();
+    cout << "Point Gauss Seidel Iterations: " << pgs_it << "\n";
+    cout << "Time: " << time << " s" << "\n";
+    cout << "Iteration rate: " << pgs_it/time << "\n";
+
 
     WriteToFile(new_domain);
     ofstream out;
@@ -77,27 +82,92 @@ void PGS(vector<vector<double>>& domain, vector<vector<double>>& new_domain){
         out << j*grid_size << " " << new_domain[j][0] << "\n";
     }
     out.close();
+    cout << "Saved x=0m\n";
 
     out.open("pgs_x25.dat");
     for(int j=0; j<n+1; j++){
         out << j*grid_size << " " << new_domain[j][100] << "\n";
     }
     out.close();
+    cout << "Saved x = 0.25m\n";
 
     out.open("pgs_x50.dat");
     for(int j=0; j<n+1; j++){
         out << j*grid_size << " " << new_domain[j][200] << "\n";
     }
     out.close();
+    cout << "Saved x=0.5m\n";
+}
+
+void InitValues1D(vector<double>& domain){
+    for(int j=0; j<n+2; j++){
+        for(int i=0; i<m+1; i++){
+            if(j==0) {domain[(j*(m+1))+i] = dirichlet_bc; continue;}
+            if(i==0) {domain[(j*(m+1))+i] = dirichlet_bc; continue;}
+            if(i==m) {domain[(j*(m+1))+i] = dirichlet_bc; continue;}
+            domain[(j*(m+1))+i] = (3*dirichlet_bc+T_inf)/4;
+        }
+    }
+}
+
+void WriteToFile1D(const vector<double>& domain){
+    ofstream out;
+    out.open("pgs_1d.dat");
+    for(int j=0; j<n+1; j++){
+        for(int i=0; i<m+1; i++){
+            out << i*grid_size << " " << j*grid_size << " " << domain[(j*(m+1))+i] << "\n";
+        }
+        out << "\n";
+    }
+    out.close();
+}
+
+void PGS_1D(vector<double>& domain){
+    auto start_time = chrono::high_resolution_clock::now();
+    double e = 1000;
+    double c = (2*h*grid_size)/k;
+    while(e > acc){
+        double sum_e = 0;
+
+        // update bc
+        for(int i=1; i<m; i++){
+            domain[((n+1)*(m+1))+i] = domain[((n-1)*(m+1))+i] + (c*(T_inf - domain[(n*(m+1))+i]));
+        }
+
+        //iterate
+        for(int j=1; j<n+1; j++){
+            int j_curr = j*(m+1);
+            int j_prev = (j-1)*(m+1);
+            int j_next = (j+1)*(m+1);
+            for(int i=1; i<m; i++){
+                double prev = domain[j_curr+i];
+                domain[j_curr+i] = (domain[j_curr+(i-1)]+domain[j_curr+(i+1)]+domain[(j_prev)+i]+domain[(j_next)+i]) * 0.25;
+                double diff = domain[(j_curr)+i] - prev;
+                sum_e += diff*diff;
+            }
+        }
+        e = sqrt(sum_e/((m-2)*(n)));
+        pgs_it++;
+    }
+    auto end_time = chrono::high_resolution_clock::now();
+    chrono::duration<double> elapsed = end_time - start_time;
+    double time = elapsed.count();
+    cout << "Point Gauss Seidel Iterations: " << pgs_it << "\n";
+    cout << "Time: " << time << " s" << "\n";
+    cout << "Iteration rate: " << pgs_it/time << "\n";
+    WriteToFile1D(domain);
 }
 
 int main(){
-    vector<vector<double>> domain(n+2, vector<double>(m+1));
-    vector<vector<double>> new_domain(n+2, vector<double>(m+1));
+    // vector<vector<double>> domain(n+2, vector<double>(m+1));
+    // vector<vector<double>> new_domain(n+2, vector<double>(m+1));
+    vector<double> domain_1d((n+2)*(m+1));
 
-    InitValues(domain);
-    InitValues(new_domain);
-    PGS(domain, new_domain);
+    // InitValues(domain);
+    // InitValues(new_domain);
+    // PGS(domain, new_domain);
+    InitValues1D(domain_1d);
+    PGS_1D(domain_1d);
 
     return 0;
 }
