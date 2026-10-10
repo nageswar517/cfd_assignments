@@ -1,6 +1,7 @@
 clc, clearvars, close all;
 
-pgs = readmatrix("assignment_6\pgs_1d.dat");
+% PGS PLOTS
+pgs = readmatrix("assignment_6\pgs.dat");
 
 x_flat1 = pgs(:, 1);
 y_flat1 = pgs(:, 2);
@@ -34,6 +35,7 @@ ylabel("Y Coordinate (m)");
 
 axis equal;
 axis tight;
+exportgraphics(gcf, "assignment_6\plots\pgs.png", Resolution=600);
 
 x0 = readmatrix("assignment_6\pgs_x0.dat");
 y2 = x0(:, 1);
@@ -52,6 +54,7 @@ xlabel("Y Coordinate (m)");
 ylabel("Temperature (K)");
 
 axis tight;
+exportgraphics(gcf, "assignment_6\plots\pgs_x0.png", Resolution=600);
 
 x25 = readmatrix("assignment_6\pgs_x25.dat");
 y3 = x25(:, 1);
@@ -70,6 +73,7 @@ xlabel("Y Coordinate (m)");
 ylabel("Temperature (K)");
 
 axis tight;
+exportgraphics(gcf, "assignment_6\plots\pgs_x25.png", Resolution=600);
 
 x50 = readmatrix("assignment_6\pgs_x50.dat");
 y4 = x50(:, 1);
@@ -88,3 +92,4 @@ xlabel("Y Coordinate (m)");
 ylabel("Temperature (K)");
 
 axis tight;
+exportgraphics(gcf, "assignment_6\plots\pgs_x50.png", Resolution=600);

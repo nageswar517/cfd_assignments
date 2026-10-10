@@ -21,85 +21,7 @@ const double h = 10;
 const double k = 50;
 const double dirichlet_bc = 1000;
 
-void InitValues(vector<vector<double>>& domain){
-    for(int j=0; j<n+2; j++){
-        for(int i=0; i<m+1; i++){
-            if(j==0) {domain[j][i] = dirichlet_bc; continue;}
-            if(i==0) {domain[j][i] = dirichlet_bc; continue;}
-            if(i==m) {domain[j][i] = dirichlet_bc; continue;}
-            domain[j][i] = (T_inf+dirichlet_bc)/2;
-        }
-    }
-}
-
-void WriteToFile(const vector<vector<double>>& domain){
-    ofstream out;
-    out.open("pgs.dat");
-    for(int i=0; i<m+1; i++){
-        for(int j=0; j<n+1; j++){
-            out << i*grid_size << " " << j*grid_size << " " << domain[j][i] << "\n";
-        }
-        out << "\n";
-    }
-    out.close();
-}
-
-void PGS(vector<vector<double>>& domain, vector<vector<double>>& new_domain){
-    auto start_time = chrono::high_resolution_clock::now();
-    double e = 1000;
-    while(e > acc){
-        double sum_e = 0;
-        swap(domain, new_domain);
-
-        // update bc
-        for(int i=1; i<m; i++){
-            domain[n+1][i] = domain[n-1][i] + (((2*h*grid_size)/k)*(T_inf - domain[n][i]));
-        }
-
-        //iterate
-        for(int j=1; j<n+1; j++){
-            for(int i=1; i<m; i++){
-                new_domain[j][i] = (new_domain[j][i-1]+domain[j][i+1]+new_domain[j-1][i]+domain[j+1][i]) * 0.25;
-                double diff = new_domain[j][i] - domain[j][i];
-                sum_e += diff*diff;
-            }
-        }
-        e = sqrt(sum_e/(m*(n-1)));
-        pgs_it++;
-    }
-    auto end_time = chrono::high_resolution_clock::now();
-    chrono::duration<double> elapsed = end_time - start_time;
-    double time = elapsed.count();
-    cout << "Point Gauss Seidel Iterations: " << pgs_it << "\n";
-    cout << "Time: " << time << " s" << "\n";
-    cout << "Iteration rate: " << pgs_it/time << "\n";
-
-
-    WriteToFile(new_domain);
-    ofstream out;
-    out.open("pgs_x0.dat");
-    for(int j=0; j<n+1; j++){
-        out << j*grid_size << " " << new_domain[j][0] << "\n";
-    }
-    out.close();
-    cout << "Saved x=0m\n";
-
-    out.open("pgs_x25.dat");
-    for(int j=0; j<n+1; j++){
-        out << j*grid_size << " " << new_domain[j][100] << "\n";
-    }
-    out.close();
-    cout << "Saved x = 0.25m\n";
-
-    out.open("pgs_x50.dat");
-    for(int j=0; j<n+1; j++){
-        out << j*grid_size << " " << new_domain[j][200] << "\n";
-    }
-    out.close();
-    cout << "Saved x=0.5m\n";
-}
-
-void InitValues1D(vector<double>& domain){
+void InitValues(vector<double>& domain){
     for(int j=0; j<n+2; j++){
         for(int i=0; i<m+1; i++){
             if(j==0) {domain[(j*(m+1))+i] = dirichlet_bc; continue;}
@@ -110,9 +32,9 @@ void InitValues1D(vector<double>& domain){
     }
 }
 
-void WriteToFile1D(const vector<double>& domain){
+void WriteToFile(const vector<double>& domain, string s){
     ofstream out;
-    out.open("pgs_1d.dat");
+    out.open(s.c_str());
     for(int j=0; j<n+1; j++){
         for(int i=0; i<m+1; i++){
             out << i*grid_size << " " << j*grid_size << " " << domain[(j*(m+1))+i] << "\n";
@@ -122,7 +44,7 @@ void WriteToFile1D(const vector<double>& domain){
     out.close();
 }
 
-void PGS_1D(vector<double>& domain){
+void PGS(vector<double>& domain){
     auto start_time = chrono::high_resolution_clock::now();
     double e = 1000;
     double c = (2*h*grid_size)/k;
@@ -146,7 +68,7 @@ void PGS_1D(vector<double>& domain){
                 sum_e += diff*diff;
             }
         }
-        e = sqrt(sum_e/((m-2)*(n)));
+        e = sqrt(sum_e/((m-1)*(n)));
         pgs_it++;
     }
     auto end_time = chrono::high_resolution_clock::now();
@@ -154,20 +76,101 @@ void PGS_1D(vector<double>& domain){
     double time = elapsed.count();
     cout << "Point Gauss Seidel Iterations: " << pgs_it << "\n";
     cout << "Time: " << time << " s" << "\n";
-    cout << "Iteration rate: " << pgs_it/time << "\n";
-    WriteToFile1D(domain);
+    cout << "Iteration rate: " << pgs_it/time << " it/s\n";
+
+    WriteToFile(domain, "pgs.dat");
+    ofstream out;
+    out.open("pgs_x0.dat");
+    for(int j=0; j<n+1; j++){
+        out << j*grid_size << " " << domain[j*(m+1)] << "\n";
+    }
+    out.close();
+    cout << "Saved pgs_x0.dat\n";
+
+    out.open("pgs_x25.dat");
+    for(int j=0; j<n+1; j++){
+        out << j*grid_size << " " << domain[j*(m+1)+100] << "\n";
+    }
+    out.close();
+    cout << "Saved pgs_x25.dat\n";
+
+    out.open("pgs_x50.dat");
+    for(int j=0; j<n+1; j++){
+        out << j*grid_size << " " << domain[j*(m+1)+200] << "\n";
+    }
+    out.close();
+    cout << "Saved pgs_x50.dat\n";
+}
+
+void PSOR(vector<double>& domain){
+    double c = (2*h*grid_size)/k;
+    double omega;
+    
+    ofstream data;
+    data.open("psor\\omega_vs_it.dat");
+    for(int om=11; om<20; om++){
+        omega = om/10.0;
+        InitValues(domain);
+        double e = 1000;
+        psor_it = 0;
+        auto start_time = chrono::high_resolution_clock::now();
+        while(e > acc){
+            double sum_e = 0;
+
+            // update bc
+            int ghost = (n+1)*(m+1);
+            int below_boundary = (n-1)*(m+1);
+            int boundary = n*(m+1);
+            for(int i=1; i<m+1; i++){
+                domain[ghost+i] = domain[below_boundary+i] + c*(T_inf-domain[boundary+i]);
+            }
+
+            // iterative solver
+            for(int j=1; j<n+1; j++){
+                int j_prev = (j-1)*(m+1);
+                int j_curr = j*(m+1);
+                int j_next = (j+1)*(m+1);
+                for(int i=1; i<m; i++){
+                    double T_old = domain[j_curr+i];
+                    double T_star = (domain[j_curr+(i-1)]+domain[j_curr+(i+1)]+domain[j_prev+i]+domain[j_next+i]) * 0.25;
+                    domain[j_curr+i] = T_old + omega*(T_star - T_old);
+                    double diff = T_star - T_old;
+                    sum_e += diff * diff;
+                }
+            }
+            e = sqrt(sum_e/(n*(m-1)));
+            psor_it++;
+        }
+        auto end_time = chrono::high_resolution_clock::now();
+        chrono::duration<double> elapsed = end_time - start_time;
+        double time = elapsed.count();
+        cout << "PSOR Iterations: " << psor_it << " for omega " << omega << "\n";
+        cout << "Time: " << time << " s" << "\n";
+        cout << "Iteration rate: " << psor_it/time << " it/s\n";
+
+        string filename = "psor\\psor_"+to_string(om)+".dat";
+        WriteToFile(domain, filename);
+        data << psor_it << " " << omega << "\n";
+    }
+    data.close();
 }
 
 int main(){
-    // vector<vector<double>> domain(n+2, vector<double>(m+1));
-    // vector<vector<double>> new_domain(n+2, vector<double>(m+1));
-    vector<double> domain_1d((n+2)*(m+1));
+    vector<double> domain((n+2)*(m+1));
+    int choice;
 
-    // InitValues(domain);
-    // InitValues(new_domain);
-    // PGS(domain, new_domain);
-    InitValues1D(domain_1d);
-    PGS_1D(domain_1d);
+    cout << "Enter 1 for PGS, 2 for PSOR, -1 to exit\nChoose solver: ";
+    cin >> choice;
 
-    return 0;
+    if(choice == 1){
+        InitValues(domain);
+        PGS(domain);
+        return 0;
+    }
+    else if(choice == 2){
+        InitValues(domain);
+        PSOR(domain);
+        return 0;
+    }
+    else return 0;
 }
