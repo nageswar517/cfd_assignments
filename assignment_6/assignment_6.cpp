@@ -27,7 +27,7 @@ void InitValues(vector<double>& domain){
             if(j==0) {domain[(j*(m+1))+i] = dirichlet_bc; continue;}
             if(i==0) {domain[(j*(m+1))+i] = dirichlet_bc; continue;}
             if(i==m) {domain[(j*(m+1))+i] = dirichlet_bc; continue;}
-            domain[(j*(m+1))+i] = (3*dirichlet_bc+T_inf)/4;
+            domain[(j*(m+1))+i] = (dirichlet_bc+dirichlet_bc+dirichlet_bc+T_inf)/4;
         }
     }
 }

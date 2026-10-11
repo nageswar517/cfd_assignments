@@ -19,7 +19,9 @@ T1 = reshape(T_flat1, [xlen1, ylen1])';
 figure(Name="Temperature distribution", Color="White");
 hold on;
 
-contourf(X1, Y1, T1, 50, 'LineColor', 'none');
+%contourf(X1, Y1, T1, 50, 'LineColor', 'none');
+pcolor(X1, Y1, T1);
+shading interp;
 set(gcf, 'Color', [0 0 0]);
 set(gca, 'Color', [0 0 0]); 
 set(gca, 'XColor', [1 1 1], 'YColor', [1 1 1]);
@@ -41,9 +43,18 @@ x0 = readmatrix("assignment_6\pgs_x0.dat");
 y2 = x0(:, 1);
 T2 = x0(:, 2);
 
-figure(Name="Temperature at x=0m", Color="White");
+x25 = readmatrix("assignment_6\pgs_x25.dat");
+y3 = x25(:, 1);
+T3 = x25(:, 2);
+
+x50 = readmatrix("assignment_6\pgs_x50.dat");
+y4 = x50(:, 1);
+T4 = x50(:, 2);
+
+figure(Name="Temperature at varying x", Color="White");
 hold on;
-plot(y2, T2, LineStyle="-", Color="White");
+
+plot(y2, T2, y3, T3, y4, T4, LineStyle="-");
 set(gcf, 'Color', [0 0 0]);
 set(gca, 'Color', [0 0 0]); 
 set(gca, 'XColor', [1 1 1], 'YColor', [1 1 1]);
@@ -52,44 +63,40 @@ hold off;
 title("Point Gauss Seidel Temperature Distribution at x=0m");
 xlabel("Y Coordinate (m)");
 ylabel("Temperature (K)");
+% 
+% axis tight;
+% exportgraphics(gcf, "assignment_6\plots\pgs_x0.png", Resolution=600);
+% 
 
-axis tight;
-exportgraphics(gcf, "assignment_6\plots\pgs_x0.png", Resolution=600);
+% 
+% figure(Name="Temperature at x=0.25m", Color="White");
+% hold on;
+% plot(y3, T3, LineStyle="-", Color="White");
+% set(gcf, 'Color', [0 0 0]);
+% set(gca, 'Color', [0 0 0]); 
+% set(gca, 'XColor', [1 1 1], 'YColor', [1 1 1]);
+% 
+% hold off;
+% title("Point Gauss Seidel Temperature Distribution at x=0.25m");
+% xlabel("Y Coordinate (m)");
+% ylabel("Temperature (K)");
+% 
+% axis tight;
+% exportgraphics(gcf, "assignment_6\plots\pgs_x25.png", Resolution=600);
+% 
 
-x25 = readmatrix("assignment_6\pgs_x25.dat");
-y3 = x25(:, 1);
-T3 = x25(:, 2);
-
-figure(Name="Temperature at x=0.25m", Color="White");
-hold on;
-plot(y3, T3, LineStyle="-", Color="White");
-set(gcf, 'Color', [0 0 0]);
-set(gca, 'Color', [0 0 0]); 
-set(gca, 'XColor', [1 1 1], 'YColor', [1 1 1]);
-
-hold off;
-title("Point Gauss Seidel Temperature Distribution at x=0.25m");
-xlabel("Y Coordinate (m)");
-ylabel("Temperature (K)");
-
-axis tight;
-exportgraphics(gcf, "assignment_6\plots\pgs_x25.png", Resolution=600);
-
-x50 = readmatrix("assignment_6\pgs_x50.dat");
-y4 = x50(:, 1);
-T4 = x50(:, 2);
-
-figure(Name="Temperature at x=0.5m", Color="White");
-hold on;
-plot(y4, T4, LineStyle="-", Color="White");
-set(gcf, 'Color', [0 0 0]);
-set(gca, 'Color', [0 0 0]); 
-set(gca, 'XColor', [1 1 1], 'YColor', [1 1 1]);
-
-hold off;
-title("Point Gauss Seidel Temperature Distribution at x=0.5m");
-xlabel("Y Coordinate (m)");
-ylabel("Temperature (K)");
-
-axis tight;
-exportgraphics(gcf, "assignment_6\plots\pgs_x50.png", Resolution=600);
+% 
+% figure(Name="Temperature at x=0.5m", Color="White");
+% hold on;
+% plot(y4, T4, LineStyle="-", Color="White");
+% set(gcf, 'Color', [0 0 0]);
+% set(gca, 'Color', [0 0 0]); 
+% set(gca, 'XColor', [1 1 1], 'YColor', [1 1 1]);
+% 
+% hold off;
+% title("Point Gauss Seidel Temperature Distribution at x=0.5m");
+% xlabel("Y Coordinate (m)");
+% ylabel("Temperature (K)");
+% 
+% axis tight;
+% exportgraphics(gcf, "assignment_6\plots\pgs_x50.png", Resolution=600);
