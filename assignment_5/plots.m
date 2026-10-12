@@ -27,10 +27,6 @@ set(gcf, 'Color', [0 0 0]);
 set(gca, 'Color', [0 0 0]); 
 set(gca, 'XColor', [1 1 1], 'YColor', [1 1 1]); 
 
-% Optional: If you want to see your mesh grid lines on top, uncomment the next two lines
-% plot(X, Y, '-', 'Color', [0 0 0 0.1]); 
-% plot(X', Y', '-', 'Color', [0 0 0 0.1]); 
-
 hold off;
 
 % 7. Styling and formatting
@@ -74,10 +70,6 @@ set(gcf, 'Color', [0 0 0]);
 set(gca, 'Color', [0 0 0]); 
 set(gca, 'XColor', [1 1 1], 'YColor', [1 1 1]); 
 
-% Optional: If you want to see your mesh grid lines on top, uncomment the next two lines
-% plot(X, Y, '-', 'Color', [0 0 0 0.1]); 
-% plot(X', Y', '-', 'Color', [0 0 0 0.1]); 
-
 hold off;
 
 % 7. Styling and formatting
@@ -89,7 +81,6 @@ title('Point Gauss Seidel Temperature Distribution');
 xlabel('X-Coordinate (m)');
 ylabel('Y-Coordinate (m)');
 
-% Lock the aspect ratio so the physical lx / ly dimensions aren't distorted
 axis equal;
 axis tight;
 exportgraphics(gcf, 'assignment_5\pgs.png', Resolution=600);

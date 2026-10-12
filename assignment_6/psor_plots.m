@@ -20,7 +20,9 @@ T5 = reshape(T_flat5, [xlen5, ylen5])';
 figure(Name="Temperature distribution", Color="White");
 hold on;
 
-contourf(X5, Y5, T5, 50, 'LineColor', 'none');
+%contourf(X5, Y5, T5, 50, 'LineColor', 'none');
+pcolor(X5, Y5, T5);
+shading interp;
 set(gcf, 'Color', [0 0 0]);
 set(gca, 'Color', [0 0 0]); 
 set(gca, 'XColor', [1 1 1], 'YColor', [1 1 1]);

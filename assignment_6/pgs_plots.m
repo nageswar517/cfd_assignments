@@ -60,14 +60,15 @@ set(gca, 'Color', [0 0 0]);
 set(gca, 'XColor', [1 1 1], 'YColor', [1 1 1]);
 
 hold off;
-title("Point Gauss Seidel Temperature Distribution at x=0m");
+title("Point Gauss Seidel Temperature Distribution at constant x");
 xlabel("Y Coordinate (m)");
 ylabel("Temperature (K)");
-% 
-% axis tight;
-% exportgraphics(gcf, "assignment_6\plots\pgs_x0.png", Resolution=600);
-% 
+legend("x=0m", "x=0.25m", "x=0.50m");
+ 
+axis tight;
+exportgraphics(gcf, "assignment_6\plots\pgs_const_x.png", Resolution=600);
 
+%
 % 
 % figure(Name="Temperature at x=0.25m", Color="White");
 % hold on;
