@@ -51,11 +51,6 @@ void PGS(vector<double>& domain){
     while(e > acc){
         double sum_e = 0;
 
-        // update bc
-        for(int i=1; i<m; i++){
-            domain[((n+1)*(m+1))+i] = domain[((n-1)*(m+1))+i] + (c*(T_inf - domain[(n*(m+1))+i]));
-        }
-
         //iterate
         for(int j=1; j<n+1; j++){
             int j_curr = j*(m+1);
@@ -70,6 +65,11 @@ void PGS(vector<double>& domain){
         }
         e = sqrt(sum_e/((m-1)*(n)));
         pgs_it++;
+
+        // update bc
+        for(int i=1; i<m; i++){
+            domain[((n+1)*(m+1))+i] = domain[((n-1)*(m+1))+i] + (c*(T_inf - domain[(n*(m+1))+i]));
+        }
     }
     auto end_time = chrono::high_resolution_clock::now();
     chrono::duration<double> elapsed = end_time - start_time;
@@ -117,14 +117,6 @@ void PSOR(vector<double>& domain){
         while(e > acc){
             double sum_e = 0;
 
-            // update bc
-            int ghost = (n+1)*(m+1);
-            int below_boundary = (n-1)*(m+1);
-            int boundary = n*(m+1);
-            for(int i=1; i<m+1; i++){
-                domain[ghost+i] = domain[below_boundary+i] + c*(T_inf-domain[boundary+i]);
-            }
-
             // iterative solver
             for(int j=1; j<n+1; j++){
                 int j_prev = (j-1)*(m+1);
@@ -134,12 +126,20 @@ void PSOR(vector<double>& domain){
                     double T_old = domain[j_curr+i];
                     double T_star = (domain[j_curr+(i-1)]+domain[j_curr+(i+1)]+domain[j_prev+i]+domain[j_next+i]) * 0.25;
                     domain[j_curr+i] = T_old + omega*(T_star - T_old);
-                    double diff = T_star - T_old;
+                    double diff = domain[j_curr+i] - T_old;
                     sum_e += diff * diff;
                 }
             }
             e = sqrt(sum_e/(n*(m-1)));
             psor_it++;
+
+            // update bc
+            int ghost = (n+1)*(m+1);
+            int below_boundary = (n-1)*(m+1);
+            int boundary = n*(m+1);
+            for(int i=1; i<m; i++){
+                domain[ghost+i] = domain[below_boundary+i] + c*(T_inf-domain[boundary+i]);
+            }
         }
         auto end_time = chrono::high_resolution_clock::now();
         chrono::duration<double> elapsed = end_time - start_time;
@@ -150,7 +150,7 @@ void PSOR(vector<double>& domain){
 
         string filename = "psor\\psor_"+to_string(om)+".dat";
         WriteToFile(domain, filename);
-        data << psor_it << " " << omega << "\n";
+        data << omega << " " << psor_it << "\n";
     }
     data.close();
 }
@@ -159,18 +159,18 @@ int main(){
     vector<double> domain((n+2)*(m+1));
     int choice;
 
-    cout << "Enter 1 for PGS, 2 for PSOR, -1 to exit\nChoose solver: ";
-    cin >> choice;
+    while(true){
+        cout << "Enter 1 for PGS, 2 for PSOR, -1 to exit\nChoose solver: ";
+        cin >> choice;
 
-    if(choice == 1){
-        InitValues(domain);
-        PGS(domain);
-        return 0;
+        if(choice == 1){
+            InitValues(domain);
+            PGS(domain);
+        }
+        else if(choice == 2){
+            InitValues(domain);
+            PSOR(domain);
+        }
+        else return 0;
     }
-    else if(choice == 2){
-        InitValues(domain);
-        PSOR(domain);
-        return 0;
-    }
-    else return 0;
 }

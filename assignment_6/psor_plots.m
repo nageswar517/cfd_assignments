@@ -38,11 +38,11 @@ ylabel("Y Coordinate (m)");
 
 axis equal;
 axis tight;
-%exportgraphics(gcf, "assignment_6\plots\psor.png", Resolution=600);
+exportgraphics(gcf, "assignment_6\plots\psor.png", Resolution=600);
 
 ovi = readmatrix("assignment_6\psor\omega_vs_it.dat");
-it = ovi(:, 1);
-omega = ovi(:, 2);
+it = ovi(:, 2);
+omega = ovi(:, 1);
 
 figure(Name="Omega vs Iteratioins", Color="White");
 hold on;
@@ -58,3 +58,4 @@ xlabel("Omega");
 ylabel("Number of Iterations");
 
 axis tight;
+exportgraphics(gcf, "assignment_6\plots\it_vs_omega.png", Resolution=600);
