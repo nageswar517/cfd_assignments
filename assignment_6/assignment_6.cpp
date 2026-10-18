@@ -3,6 +3,7 @@
 #include <cmath>
 #include <vector>
 #include <chrono>
+#include <filesystem>
 
 using namespace std;
 
@@ -106,8 +107,9 @@ void PSOR(vector<double>& domain){
     double c = (2*h*grid_size)/k;
     double omega;
     
+    filesystem::create_directory("psor");
     ofstream data;
-    data.open("psor\\omega_vs_it.dat");
+    data.open("psor/omega_vs_it.dat");
     for(int om=11; om<20; om++){
         omega = om/10.0;
         InitValues(domain);
@@ -148,7 +150,7 @@ void PSOR(vector<double>& domain){
         cout << "Time: " << time << " s" << "\n";
         cout << "Iteration rate: " << psor_it/time << " it/s\n";
 
-        string filename = "psor\\psor_"+to_string(om)+".dat";
+        string filename = "psor/psor_"+to_string(om)+".dat";
         WriteToFile(domain, filename);
         data << omega << " " << psor_it << "\n";
     }
