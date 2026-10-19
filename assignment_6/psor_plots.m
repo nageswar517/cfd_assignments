@@ -30,7 +30,7 @@ set(gca, 'XColor', [1 1 1], 'YColor', [1 1 1]);
 hold off;
 colormap("jet");
 c = colorbar;
-c.Label.String = "Temperature (T)";
+c.Label.String = "Temperature (K)";
 
 title("Point Successive Over Relaxation Temperature Distribution");
 xlabel("X Coordinate (m)");
