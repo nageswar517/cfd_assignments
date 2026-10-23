@@ -10,19 +10,19 @@ const double L = 1;
 const double U = 1;
 const double V = 0;
 
-const double nu1 = 0.1;
-const double nu2 = 0.01;
+const double Re1 = 10;
+const double Re2 = 100;
 const int n1 = 100;
 const int n2 = 400;
 
 const double acc = 1e-6;
 
-vector<double> InitValues(vector<double>& psi, vector<double>& omega, int n){
+void InitValues(vector<double>& psi, vector<double>& omega, int n){
     psi.assign((n+1)*(n+1), 0);
     omega.assign((n+1)*(n+1), 0);
 }
 
-void WriteDataToFile(const vector<double>& psi, const vector<double>& omega, const int n, const double del, const double nu){
+void WriteDataToFile(const vector<double>& psi, const vector<double>& omega, const int n, const double del, const double Re){
     // Compute Velocity field
     vector<double> u((n+1)*(n+1));
     vector<double> v((n+1)*(n+1));
@@ -41,7 +41,7 @@ void WriteDataToFile(const vector<double>& psi, const vector<double>& omega, con
     }
 
     // Writing to Files
-    double Re = 1/nu;
+    // double Re = (U*L)/nu;
     string filename = "out_"+to_string(n)+'_'+to_string((int)Re)+".dat";
     ofstream out;
     out.open(filename.c_str());
@@ -56,7 +56,7 @@ void WriteDataToFile(const vector<double>& psi, const vector<double>& omega, con
     cout << "Data written to " << filename << " file.\n";
 }
 
-void Solve(vector<double>& psi, vector<double>& omega, int n, double nu){
+void Solve(vector<double>& psi, vector<double>& omega, int n, double Re){
     long int it = 0;
     double del = L/n;
     double e_psi = 1000;
@@ -92,6 +92,7 @@ void Solve(vector<double>& psi, vector<double>& omega, int n, double nu){
         }
 
         double sum_e_o = 0;
+        double nu = (U*L)/Re;
         // Update Vorticity
         for(int j=1; j<n; j++){
             int j_prev = (j-1)*(n+1);
@@ -111,20 +112,28 @@ void Solve(vector<double>& psi, vector<double>& omega, int n, double nu){
     auto end_time = chrono::high_resolution_clock::now();
     chrono::duration<double> elapsed = end_time - start_time;
     double time = elapsed.count();
-    cout << "For Re=" << 1/nu << " and resolution of " << n << "X" << n << "\n";
+    cout << "For Re=" << Re << " and resolution of " << n << "X" << n << "\n";
     cout << "Time taken = " << time <<"\n";
     cout << "Number of Iterations = " << it << "\n";
-    WriteDataToFile(psi, omega, n, del, nu);
+    cout << "Iteration rate = " << it/time << " it/s" << "\n";
+    WriteDataToFile(psi, omega, n, del, Re);
 }
 
 int main(){
+    // Implement with Re instead of nu
     vector<double> psi;
     vector<double> omega;
     InitValues(psi, omega, n1);
-    Solve(psi, omega, n1, nu1);
+    Solve(psi, omega, n1, Re1);
+
+    InitValues(psi, omega, n1);
+    Solve(psi, omega, n1, Re2);
 
     InitValues(psi, omega, n2);
-    Solve(psi, omega, n2, nu1);
+    Solve(psi, omega, n2, Re1);
+
+    InitValues(psi, omega, n2);
+    Solve(psi, omega, n2, Re2);
 
 
     return 0;
